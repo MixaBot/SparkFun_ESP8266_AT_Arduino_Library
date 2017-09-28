@@ -48,7 +48,7 @@ bool ESP8266Class::begin(unsigned long baudRate, esp8266_serial_port serialPort)
 	if (serialPort == ESP8266_SOFTWARE_SERIAL)
 	{
 		swSerial.begin(baudRate);
-		_serial = &swSerial;
+		_serial = &Serial1;//&swSerial;
 	}
 	else if (serialPort == ESP8266_HARDWARE_SERIAL)
 	{

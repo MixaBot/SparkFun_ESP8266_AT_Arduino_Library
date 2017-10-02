@@ -36,7 +36,7 @@ uint8_t ESP8266Client::status()
 {
 	return esp8266.status();
 }
-	
+
 int ESP8266Client::connect(IPAddress ip, uint16_t port)
 {
 	return connect(ip, port, 0);
@@ -51,24 +51,24 @@ int ESP8266Client::connect(String host, uint16_t port, uint32_t keepAlive)
 {
 	return connect(host.c_str(), port, keepAlive);
 }
-	
-int ESP8266Client::connect(IPAddress ip, uint16_t port, uint32_t keepAlive) 
+
+int ESP8266Client::connect(IPAddress ip, uint16_t port, uint32_t keepAlive)
 {
 	char ipAddress[16];
 	sprintf(ipAddress, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
-	
+
 	return connect((const char *)ipAddress, port, keepAlive);
 }
-	
-int ESP8266Client::connect(const char* host, uint16_t port, uint32_t keepAlive) 
+
+int ESP8266Client::connect(const char* host, uint16_t port, uint32_t keepAlive)
 {
 	_socket = getFirstSocket();
-	
+
     if (_socket != ESP8266_SOCK_NOT_AVAIL)
     {
 		esp8266._state[_socket] = TAKEN;
 		int16_t rsp = esp8266.tcpConnect(_socket, host, port, keepAlive);
-		
+
 		return rsp;
 	}
 }
@@ -105,12 +105,12 @@ int ESP8266Client::read(uint8_t *buf, size_t size)
 {
 	if (esp8266.available() < size)
 		return 0;
-	
+
 	for (int i=0; i<size; i++)
 	{
 		buf[i] = esp8266.read();
 	}
-	
+
 	return 1;
 }
 
@@ -133,15 +133,22 @@ void ESP8266Client::stop()
 uint8_t ESP8266Client::connected()
 {
 	// If data is available, assume we're connected. Otherwise,
-	// we'll try to send the status query, and will probably end 
+	// we'll try to send the status query, and will probably end
 	// up timing out if data is still coming in.
-	if (_socket == ESP8266_SOCK_NOT_AVAIL)
+	if (_socket == ESP8266_SOCK_NOT_AVAIL) {
+	    Serial.println("sock is NOT_AVAIL, returning 0");
 		return 0;
-	else if (available() > 0)
+	}
+	else if (available() > 0) {
+		Serial.println("Available() > 0, returning 1");
 		return 1;
-	else if (status() == ESP8266_STATUS_CONNECTED)
+	}
+	else if (status() == ESP8266_STATUS_CONNECTED) {
+		Serial.println("Status() is CONNECTED, returning 1");
 		return 1;
-	
+	}
+
+    Serial.println("Nothing, returning 0");
 	return 0;
 }
 
@@ -154,7 +161,7 @@ ESP8266Client::operator bool()
 uint8_t ESP8266Client::getFirstSocket()
 {
 	/*
-	for (int i = 0; i < ESP8266_MAX_SOCK_NUM; i++) 
+	for (int i = 0; i < ESP8266_MAX_SOCK_NUM; i++)
 	{
 		if (esp8266._state[i] == AVAILABLE)
 		{
@@ -164,7 +171,7 @@ uint8_t ESP8266Client::getFirstSocket()
 	return ESP8266_SOCK_NOT_AVAIL;
 	*/
 	esp8266.updateStatus();
-	for (int i = 0; i < ESP8266_MAX_SOCK_NUM; i++) 
+	for (int i = 0; i < ESP8266_MAX_SOCK_NUM; i++)
 	{
 		if (esp8266._status.ipstatus[i].linkID == 255)
 		{

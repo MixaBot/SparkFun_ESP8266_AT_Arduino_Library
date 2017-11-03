@@ -28,7 +28,7 @@ Distributed as-is; no warranty is given.
 ////////////////////////
 // Buffer Definitions //
 ////////////////////////
-#define ESP8266_RX_BUFFER_LEN 512 // Number of bytes in the serial receive buffer
+#define ESP8266_RX_BUFFER_LEN 1024 // Number of bytes in the serial receive buffer
 char esp8266RxBuffer[ESP8266_RX_BUFFER_LEN];
 unsigned int bufferHead; // Holds position of latest byte placed in buffer.
 
@@ -794,6 +794,7 @@ unsigned int ESP8266Class::readByteToBuffer()
 char * ESP8266Class::searchBuffer(const char * test)
 {
 	int bufferLen = strlen((const char *)esp8266RxBuffer);
+
 	// If our buffer isn't full, just do an strstr
 	if (bufferLen < ESP8266_RX_BUFFER_LEN)
 		return strstr((const char *)esp8266RxBuffer, test);

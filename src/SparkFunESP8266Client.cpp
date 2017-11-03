@@ -130,6 +130,10 @@ void ESP8266Client::stop()
 	esp8266._state[_socket] = AVAILABLE;
 }
 
+char * ESP8266Client::searchBuffer(const char * test) {
+    return esp8266.searchBuffer(test);
+}
+
 uint8_t ESP8266Client::connected()
 {
 	// If data is available, assume we're connected. Otherwise,

@@ -28,7 +28,7 @@ Distributed as-is; no warranty is given.
 ////////////////////////
 // Buffer Definitions //
 ////////////////////////
-#define ESP8266_RX_BUFFER_LEN 128 // Number of bytes in the serial receive buffer
+#define ESP8266_RX_BUFFER_LEN 512 // Number of bytes in the serial receive buffer
 char esp8266RxBuffer[ESP8266_RX_BUFFER_LEN];
 unsigned int bufferHead; // Holds position of latest byte placed in buffer.
 
@@ -47,7 +47,8 @@ bool ESP8266Class::begin(unsigned long baudRate, esp8266_serial_port serialPort)
 	_baud = baudRate;
 	if (serialPort == ESP8266_SOFTWARE_SERIAL)
 	{
-		swSerial.begin(baudRate);
+	    Serial1.begin(baudRate);
+		//swSerial.begin(baudRate);
 		_serial = &Serial1;//&swSerial;
 	}
 	else if (serialPort == ESP8266_HARDWARE_SERIAL)
@@ -308,6 +309,7 @@ int16_t ESP8266Class::status()
 			return 1;
 			break;
 		case ESP8266_STATUS_CONNECTED: // Connected, but haven't gotten an IP
+		    return _status.stat;
 		case ESP8266_STATUS_NOWIFI: // No WiFi configured
 			return 0;
 			break;
@@ -796,7 +798,9 @@ char * ESP8266Class::searchBuffer(const char * test)
 	if (bufferLen < ESP8266_RX_BUFFER_LEN)
 		return strstr((const char *)esp8266RxBuffer, test);
 	else
-	{	//! TODO
+	{
+	    Serial.println("bufferLen overran!");
+	    //! TODO
 		// If the buffer is full, we need to search from the end of the
 		// buffer back to the beginning.
 		int testLen = strlen(test);

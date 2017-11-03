@@ -28,20 +28,20 @@ Distributed as-is; no warranty is given.
 #include "SparkFunESP8266WiFi.h"
 
 class ESP8266Client : public Client {
-	
+
 public:
 	ESP8266Client();
 	ESP8266Client(uint8_t sock);
 
 	uint8_t status();
-	
+
 	virtual int connect(IPAddress ip, uint16_t port);
 	virtual int connect(const char *host, uint16_t port);
-	
+
 	int connect(IPAddress ip, uint16_t port, uint32_t keepAlive);
 	int connect(String host, uint16_t port, uint32_t keepAlive = 0);
 	int connect(const char *host, uint16_t port, uint32_t keepAlive);
-	
+
 	virtual size_t write(uint8_t);
 	virtual size_t write(const uint8_t *buf, size_t size);
 	virtual int available();
@@ -57,11 +57,18 @@ public:
 
 	using Print::write;
 
+
+	/// searchBuffer([test]) - Search buffer for string [test]
+	/// Success: Returns pointer to beginning of string
+	/// Fail: returns NULL
+	//! TODO: Fix this function so it searches circularly
+	char * searchBuffer(const char * test);
+
 private:
 	static uint16_t _srcport;
 	uint16_t  _socket;
 	bool ipMuxEn;
-	
+
 
 	uint8_t getFirstSocket();
 };
